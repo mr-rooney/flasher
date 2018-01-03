@@ -65,6 +65,8 @@
 
 #define STM32_CMD_GET_LENGTH	17	/* bytes in the reply */
 
+struct stm32_dev dev;
+
 struct stm32_cmd {
 	uint8_t get;
 	uint8_t gvr;
@@ -357,6 +359,8 @@ stm32_t *stm32_init(struct port_interface *port, const char init)
 {
 	uint8_t len, val, buf[257];
 	stm32_t *stm;
+	uint32_t addr;
+	uint32_t size;
 	int i, new_cmds;
 
 	stm      = calloc(sizeof(stm32_t), 1);
@@ -485,10 +489,30 @@ stm32_t *stm32_init(struct port_interface *port, const char init)
 		stm32_close(stm);
 		return NULL;
 	}
+	
+	addr = 0x1FFFF7CC;
+	if(stm32_read_memory(stm, addr, buf, 4) != STM32_ERR_OK)
+	{
+	    fprintf(stderr, "Error: could not read memory size at location 0x%08x\n", addr);
+		return NULL;
+	}
+	
+	size = 0;
+	size |= buf[1] << 8;
+	size |= buf[0] << 0;
+	size *= 1024;
+	
+	
+	fprintf(stdout, "size = %u\n", size);
+	
 
 	stm->dev = devices;
 	while (stm->dev->id != 0x00 && stm->dev->id != stm->pid)
 		++stm->dev;
+		
+    memcpy((void*)&dev, stm->dev, sizeof(stm32_dev_t));
+    dev.fl_end = dev.fl_start + size;
+    stm->dev = &dev;
 
 	if (!stm->dev->id) {
 		fprintf(stderr, "Unknown/unsupported device (Device ID: 0x%03x)\n", stm->pid);
@@ -842,7 +866,7 @@ static stm32_err_t stm32_pages_erase(const stm32_t *stm, uint32_t spage, uint32_
 	s_err = stm32_get_ack_timeout(stm, pages * STM32_PAGEERASE_TIMEOUT);
 	if (s_err != STM32_ERR_OK) {
 		fprintf(stderr, "Page-by-page erase failed. Check the maximum pages your device supports.\n");
-		if ((port->flags & PORT_STRETCH_W)
+		if (port->flags & PORT_STRETCH_W
 		    && stm->cmd->er != STM32_CMD_EE_NS)
 			stm32_warn_stretching("erase");
 		return STM32_ERR_UNKNOWN;
