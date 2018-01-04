@@ -16,7 +16,7 @@ Usage
 raspi> sudo su
 raspi> insmod i2c-gpio-param.ko
 raspi> echo 5 2 3 2 100 > /sys/class/i2c-gpio/add_bus
-raspi> stm32/stm32flash -R -i 17,-18,18:-17,18,-18,18 -w application.binary -v -g 0x00 -a 0x41 /dev/i2c-5
+raspi> ./stm32flash -R -i 17,-18,18:-17,18,-18,18 -w application.binary -v -g 0x00 -a 0x41 /dev/i2c-5
 raspi> shutdown now
 
 Ensure that you unplug and replug the power supply of the Raspberry Pi after shutting down.
