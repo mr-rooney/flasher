@@ -1,10 +1,10 @@
 Firmware Flasher
 ================
 
-Firmware flasher to update the firmware of the nav.HAT microcontroller. 
+Firmware flasher to update the firmware of the Moitessier HAT microcontroller. 
 
 Thanks to Tormod Volden for providing this source code. The original code can be found at https://sourceforge.net/p/stm32flash/code/ci/master/tree/.
-The code has been slightly modified to fit for the STM32F091CB microcontroller used on the nav.HAT. See the git log for further information.
+The code has been slightly modified to fit for the STM32F091CB microcontroller used on the Moitessier HAT. See the git log for further information.
 
 
 Compiling the sources
