@@ -7,7 +7,7 @@ Thanks to Tormod Volden for providing this source code. The original code can be
 The code has been slightly modified to fit for the STM32F091CB microcontroller used on the Moitessier HAT. See the git log for further information.
 
 
-Compiling the sources
+Compiling the Sources
 =====================
 
 host> export CC=arm-linux-gnueabihf-gcc
